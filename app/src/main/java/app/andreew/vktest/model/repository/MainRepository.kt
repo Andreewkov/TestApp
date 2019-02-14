@@ -64,6 +64,7 @@ class MainRepository private constructor() : MainContract.Repository {
                             )
                             listNews?.add(news)
                         }
+                        isLoading = false
                         isLoaded = true
                         listener.newsLoaded(listNews!!)
                         return

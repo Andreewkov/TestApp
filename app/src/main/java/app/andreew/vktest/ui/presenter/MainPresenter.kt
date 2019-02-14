@@ -21,11 +21,11 @@ class MainPresenter : MainContract.Presenter {
     }
 
     override fun loadNews() {
-        loadNews(true)
+        loadNews(false)
     }
 
     override fun refresh() {
-        loadNews(false)
+        loadNews(true)
     }
 
     private fun loadNews(whatever: Boolean) {
@@ -42,7 +42,7 @@ class MainPresenter : MainContract.Presenter {
                     view?.showError(type, object : ErrorView.OnErrorButtonClickListener {
                         override fun repeat() {
                             view?.setState(CurrentState.LOADING, false)
-                            refresh()
+                            loadNews()
                         }
                     })
                 }

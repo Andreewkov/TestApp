@@ -63,12 +63,10 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         runOnUiThread {
             when (state) {
                 CurrentState.LOADING -> {
-                    if (whatever!!) {
+                    if (!whatever!!) {
                         news.visibility = View.GONE
                         progressBar.visibility = View.VISIBLE
                         errorView.visibility = View.GONE
-                    } else {
-                        setState(CurrentState.NEWS, null)
                     }
                 }
                 CurrentState.ERROR -> {
