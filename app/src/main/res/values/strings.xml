@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">vktest</string>
+    <string name="app_name">RSS The Wall Street</string>
+
+    <string name="error_text_parsing">Ошибка при обработке ответа!</string>
+    <string name="error_text_failure">Ошибка соединения, повторите попытку!</string>
+    <string name="error_text_fatal"></string>
+    <string name="error_button">Повторить</string>
 </resources>
