@@ -2,8 +2,4 @@
 Приложение для подгрузки RSS в открытом доступе
 Различные ошибки CustomView, SwipeRefresh
 ## Скриншоты
-![im1] ![im2] ![im3] ![im4]
-[im1]:https://i.ibb.co/Czn2jbX/im1.png
-[im2]:https://i.ibb.co/qRRRr2b/im2.png
-[im3]:https://i.ibb.co/6P61fC7/im3.png
-[im4]:https://i.ibb.co/3S8QHGY/im4.png
+![](https://i.ibb.co/Czn2jbX/im1.png =200x350) ![](https://i.ibb.co/Czn2jbX/im1.png =200x350) ![](https://i.ibb.co/6P61fC7/im3.png = 200x350) ![](https://i.ibb.co/3S8QHGY/im4.png = 200x350)
