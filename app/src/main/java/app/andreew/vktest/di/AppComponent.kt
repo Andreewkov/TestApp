@@ -5,10 +5,7 @@ import app.andreew.vktest.ui.view.activity.MainActivity
 import dagger.Component
 import javax.inject.Singleton
 
-@Component(
-    modules = [
-        MainModule::class
-    ]
+@Component(modules = [MainModule::class]
 )
 
 @Singleton

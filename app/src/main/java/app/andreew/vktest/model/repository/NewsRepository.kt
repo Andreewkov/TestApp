@@ -11,79 +11,89 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainRepository private constructor() : MainContract.Repository {
+class NewsRepository private constructor() : MainContract.Repository {
 
-    var listNews: ArrayList<News>? = null
-    var isLoaded = false
-    var isLoading = false;
+    private var listNews: ArrayList<News>? = null
+    private var isLoaded = false
+    private var isLoading = false
+    private var listener: LoadListener? = null
 
     companion object {
-        private var instance: MainRepository = MainRepository()
+        private var instance: NewsRepository = NewsRepository()
         fun getInstance() = instance
     }
 
     override fun loadNews(whatever: Boolean, listener: LoadListener) {
         if (!isLoading)
-            if (!isLoaded || whatever)
-                getJson(listener)
-            else
+            if (!isLoaded || whatever) {
+                this.listener = listener
+                getJson()
+            } else
                 listener.newsLoaded(listNews!!)
     }
 
-    private fun getJson(listener: LoadListener) {
+    private fun getJson() {
         isLoading = true
         ApiInterface.getApi().getNews().enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful && response.body() != null) {
-                    listNews = ArrayList<News>()
-                    var rss: JSONObject? = null
-                    try {
-                        rss = JSONObject(response.body())
-                    } catch (e: JSONException) {
-                        showError(ErrorView.ErrorType.PARSING, listener)
-                        return
-                    }
-                    if (rss.getString("status").equals("ok")) {
-                        var jsonNews: JSONArray? = null
-                        try {
-                            jsonNews = rss.getJSONArray("articles")
-                        } catch (e: JSONException) {
-                            showError(ErrorView.ErrorType.PARSING, listener)
-                            return
-                        }
-                        for (i in 0..(jsonNews.length() - 1)) {
-                            val currentJson = jsonNews.getJSONObject(i)
-                            var news = News(
-                                currentJson.getJSONObject("source").getString("name"),
-                                currentJson.getString("author"),
-                                currentJson.getString("title"),
-                                currentJson.getString("description"),
-                                currentJson.getString("url"),
-                                currentJson.getString("urlToImage"),
-                                currentJson.getString("publishedAt")
-                            )
-                            listNews?.add(news)
-                        }
-                        isLoading = false
-                        isLoaded = true
-                        listener.newsLoaded(listNews!!)
-                        return
-                    }
-                    showError(ErrorView.ErrorType.PARSING, listener)
-                }
-                showError(ErrorView.ErrorType.FATAL, listener)
+                    parseJson(response.body()!!)
+                } else
+                    showError(ErrorView.ErrorType.FATAL)
             }
 
             override fun onFailure(call: Call<String>, t: Throwable) {
-                showError(ErrorView.ErrorType.FAILURE, listener)
+                showError(ErrorView.ErrorType.FAILURE)
             }
 
         })
     }
 
-    fun showError(type: ErrorView.ErrorType, listener: LoadListener) {
-        isLoading = false
-        listener.errorLoading(type)
+    private fun parseJson(responseBody: String) {
+        listNews = ArrayList<News>()
+        var rss: JSONObject? = null
+        try {
+            rss = JSONObject(responseBody)
+        } catch (e: JSONException) {
+            showError(ErrorView.ErrorType.PARSING)
+            return
+        }
+        if (rss.getString("status").equals("ok")) {
+            var jsonNews: JSONArray? = null
+            try {
+                jsonNews = rss.getJSONArray("articles")
+            } catch (e: JSONException) {
+                showError(ErrorView.ErrorType.PARSING)
+                return
+            }
+            for (i in 0..(jsonNews.length() - 1)) {
+                val currentJson = jsonNews.getJSONObject(i)
+                listNews?.add(getNewsFromJsonObject(currentJson))
+            }
+            isLoading = false
+            isLoaded = true
+            listener?.newsLoaded(listNews!!)
+            return
+        }
+        showError(ErrorView.ErrorType.PARSING)
     }
+
+    private fun getNewsFromJsonObject(jsonObject: JSONObject): News {
+        return News(
+            jsonObject.getJSONObject("source").getString("name"),
+            jsonObject.getString("author"),
+            jsonObject.getString("title"),
+            jsonObject.getString("description"),
+            jsonObject.getString("url"),
+            jsonObject.getString("urlToImage"),
+            jsonObject.getString("publishedAt")
+        )
+    }
+
+    private fun showError(type: ErrorView.ErrorType) {
+        isLoading = false
+        listener?.errorLoading(type)
+    }
+
 
 }

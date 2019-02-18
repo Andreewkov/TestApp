@@ -38,14 +38,14 @@ class Adapter(news: ArrayList<News>?, listener: OpenUrlListener) : RecyclerView.
     }
 
     class ViewHolder : RecyclerView.ViewHolder {
-        var view: View? = null
-        var textSource: TextView? = null
-        var textTitle: TextView? = null
-        var textDescription: TextView? = null
-        var textPublished: TextView? = null
-        var textAuthor: TextView? = null
-        var image: ImageView? = null
-        var listener: OpenUrlListener? = null
+        val view: View
+        val textSource: TextView
+        val textTitle: TextView
+        val textDescription: TextView
+        val textPublished: TextView
+        val textAuthor: TextView
+        val image: ImageView
+        val listener: OpenUrlListener
 
         constructor(view: View, listener: OpenUrlListener) : super(view) {
             textSource = view.findViewById(R.id.textSource)
